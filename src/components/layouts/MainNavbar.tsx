@@ -14,8 +14,9 @@ interface MainNavbarProps {
 }
 
 async function MainNavbar({ adminLayout = false }: MainNavbarProps) {
+  const iconSize = 50
   return (
-    <nav className="bg-background/95 fixed z-50 w-full">
+    <nav className="bg-white fixed z-50 w-full">
       <div
         className={cn(
           adminLayout ? "mx-auto px-[3rem] max-w-[2500px] py-3" : "container",
@@ -24,7 +25,7 @@ async function MainNavbar({ adminLayout = false }: MainNavbarProps) {
         <div className="hidden md:flex gap-x-8 justify-between items-center">
           {/* Menu & branding */}
           <div className="flex gap-x-3 items-center">
-            <SideMenu />
+          <SideMenu iconWidth={iconSize} />
             <Branding />
           </div>
 
@@ -43,7 +44,7 @@ async function MainNavbar({ adminLayout = false }: MainNavbarProps) {
             </Suspense>
 
             <Link href={"/wish-list"}>
-              <Icons.heart className="w-4 h-4" aria-label="wishlist" />
+              <Icons.heart className="w-6 h-6" aria-label="wishlist" />
             </Link>
 
             <Suspense fallback={<CartLink productCount={0} />}>

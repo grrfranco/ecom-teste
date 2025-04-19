@@ -1,4 +1,4 @@
-import { OperationContext, RequestPolicy } from "@urql/next";
+import { OperationContext, RequestPolicy } from "urql";
 import React from "react";
 import { useQuery, UseQueryArgs, UseQueryResponse } from "urql";
 

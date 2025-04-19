@@ -5,7 +5,6 @@ import {
   fetchExchange,
 } from "@urql/core";
 import { env } from "../env.mjs";
-import { registerUrql } from "@urql/next/rsc";
 
 export const makeClient = (access_token?: string) => {
   return createClient({
@@ -57,8 +56,4 @@ export function expectedErrorsHandler({
 
   return foundExpectedError ? unexpectedErrorMessage : null;
 }
-
-export const createUrqlClient = (access_token?: string) =>
-  registerUrql(() => makeClient(access_token)).getClient();
-
-export const { getClient } = registerUrql(makeClient);
+export const getClient = () => makeClient();

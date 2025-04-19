@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persistNSync } from "persist-and-sync";
-import { useMutation } from "@urql/next";
+import { useMutation } from "urql";
 import { createCartMutation, updateCartsMutation } from "./query";
 
 export type CartItem = {

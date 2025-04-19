@@ -6,7 +6,7 @@ import React from "react";
 import { Card } from "../../../components/ui/card";
 
 import { cn, keytoUrl } from "@/lib/utils";
-import { useQuery } from "@urql/next";
+import { useQuery } from "urql";
 import { Icons } from "../../../components/layouts/icons";
 import { Skeleton } from "../../../components/ui/skeleton";
 

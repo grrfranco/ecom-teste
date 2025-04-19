@@ -24,7 +24,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { DocumentType, gql } from "@/gql";
-import { useMutation } from "@urql/next";
+import { useMutation } from "urql";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

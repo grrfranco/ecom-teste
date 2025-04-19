@@ -2,7 +2,7 @@
 
 import { gql } from "@/gql";
 import { SearchQuery, SearchQueryVariables } from "@/gql/graphql";
-import { useQuery } from "@urql/next";
+import { useQuery } from "urql";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/features/products";
 import SearchProductsGridSkeleton from "./SearchProductsGridSkeleton";

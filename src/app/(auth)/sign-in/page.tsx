@@ -15,8 +15,8 @@ import { SigninForm } from "@/features/auth";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "HIYORI | Sign In",
-  description: "Sign in to HIYORI",
+  title: "ATACAFÉ | Logar-se",
+  description: "Se logue em atacafé",
 };
 
 export default function SignInPage() {
@@ -24,8 +24,8 @@ export default function SignInPage() {
     <section>
       <Card className="border-0 shadow-none">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl">Sign in</CardTitle>
-          <CardDescription>Welcome back</CardDescription>
+          <CardTitle className="text-2xl">Entre</CardTitle>
+          <CardDescription>Bem vindo de volta.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <Suspense
@@ -42,7 +42,7 @@ export default function SignInPage() {
                 <span className="w-full border-t" />
               </div>
               <span className="bg-background px-2 text-muted-foreground z-10">
-                Or continue with
+                Ou Continue
               </span>
             </div>
 
@@ -54,13 +54,13 @@ export default function SignInPage() {
 
         <CardFooter className="flex flex-wrap items-center space-x-2">
           <div className="flex-1 text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            Não tem conta?{" "}
             <Link
               aria-label="Sign up"
               href="/sign-up"
               className="text-primary underline-offset-4 transition-colors hover:underline"
             >
-              Sign up
+              Cadastre-se
             </Link>
           </div>
           <Link
@@ -68,7 +68,7 @@ export default function SignInPage() {
             href="/sign-in/reset-password"
             className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
           >
-            Reset password
+            Resetar senha
           </Link>
         </CardFooter>
       </Card>

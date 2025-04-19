@@ -2,43 +2,42 @@
 
 import db from "@/lib/supabase/db";
 import createServerClient from "@/lib/supabase/server";
-import { User } from "@supabase/supabase-js";
+import supabaseAdmin from "@/lib/supabase/admin"; // ✅ novo import
+import { type AuthUser } from "@supabase/supabase-js";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { profiles } from "../../lib/supabase/schema";
 import { AdminUserFormData } from "@/features/users/validations";
 import { env } from "@/env.mjs";
-import createClient from "@/lib/supabase/server";
 
 export const getCurrentUser = async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient({ cookieStore });
 
-  const userResponse = await supabase.auth.getUser();
-  return userResponse.data.user;
+  const { data, error } = await supabase.auth.getUser(); // ✅ corrigido
+  if (error) throw new Error("Erro ao buscar usuário.");
+  return data.user ?? null;
 };
+
 export const getCurrentUserSession = async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient({ cookieStore });
 
-  const userResponse = await supabase.auth.getSession();
-
-  return userResponse.data.session;
+  const { data, error } = await supabase.auth.getSession(); // ✅ corrigido
+  if (error) throw new Error("Erro ao buscar sessão.");
+  return data.session;
 };
 
-export const isAdmin = (currentUser: User | null) =>
-  currentUser?.app_metadata.isAdmin;
+export const isAdmin = async (currentUser: AuthUser | null) =>
+  currentUser?.user_metadata?.isAdmin ?? false; // ✅ corrigido
 
 export const getUser = async ({ userId }: { userId: string }) => {
-  const cookieStore = cookies();
-  const adminAuthClient = createClient({ cookieStore, isAdmin: true }).auth
-    .admin;
-
   try {
-    const { data, error } = await adminAuthClient.getUserById(userId);
+    const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId); // ✅ corrigido
+    if (error) throw new Error(error.message);
     return data;
   } catch (err) {
-    throw new Error("There is an error");
+    throw new Error("Erro ao buscar o usuário.");
   }
 };
 
@@ -49,18 +48,13 @@ export const listUsers = async ({
   page?: number;
   perPage?: number;
 }) => {
-  const cookieStore = cookies();
-  const adminAuthClient = createClient({ cookieStore, isAdmin: true }).auth
-    .admin;
-
-  const {
-    data: { users },
-    error,
-  } = await adminAuthClient.listUsers({
+  const { data, error } = await supabaseAdmin.auth.admin.listUsers({ // ✅ corrigido
     page,
     perPage,
   });
-  return users;
+
+  if (error) throw new Error(error.message);
+  return data.users;
 };
 
 export const createUser = async ({
@@ -68,25 +62,23 @@ export const createUser = async ({
   name,
   password,
 }: AdminUserFormData) => {
-  const cookieStore = cookies();
-  const adminAuthClient = createClient({ cookieStore, isAdmin: true }).auth
-    .admin;
-
   try {
     const existedUser = await db.query.profiles.findFirst({
       where: eq(profiles.email, email),
     });
-    if (existedUser) throw new Error(`User with email ${email} is existed.`);
 
-    const res = await adminAuthClient.createUser({
+    if (existedUser) throw new Error(`User with email ${email} already exists.`);
+
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({ // ✅ corrigido
       email,
       password,
-      role: "ADMIN",
-      user_metadata: { name },
+      role: "authenticated",
+      user_metadata: { name, isAdmin: true },
     });
 
-    return res;
+    if (error) throw new Error(error.message);
+    return data;
   } catch (err) {
-    throw new Error("Unexpected error occured.");
+    throw new Error("Erro inesperado ao criar usuário.");
   }
 };

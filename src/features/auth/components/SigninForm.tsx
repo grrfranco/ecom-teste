@@ -35,7 +35,7 @@ export function SignInForm() {
     resolver: zodResolver(authSchema),
     defaultValues: {
       email: "",
-      password: "",
+      senha: "",
     },
   });
 
@@ -44,11 +44,11 @@ export function SignInForm() {
     if (error) toast({ title: "Error", description: error });
   }, [searchParams]);
 
-  function onSubmit({ email, password }: FormData) {
+  function onSubmit({ email, senha }: FormData) {
     startTransition(async () => {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email,  
+        password: senha,
       });
       console.log("data", data);
 
@@ -82,10 +82,10 @@ export function SignInForm() {
         />
         <FormField
           control={form.control}
-          name="password"
+          name="senha"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Senha</FormLabel>
               <FormControl>
                 <PasswordInput
                   placeholder="**********"

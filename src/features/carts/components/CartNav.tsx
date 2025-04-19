@@ -2,7 +2,7 @@
 import { useMemo } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import { User } from "@supabase/auth-helpers-nextjs";
-import { useQuery } from "@urql/next";
+import { useQuery } from "urql";
 import CartLink from "./CartLink";
 import { FetchCartQuery } from "./UserCartSection";
 import useCartStore, { calcProductCountStorage } from "../useCartStore";

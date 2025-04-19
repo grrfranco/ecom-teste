@@ -1,5 +1,4 @@
 import { env } from "@/env.mjs";
-
 import { CookieOptions, createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
@@ -7,7 +6,7 @@ export function createClient({
   cookieStore,
   isAdmin = false,
 }: {
-  cookieStore: ReturnType<typeof cookies>;
+  cookieStore: Awaited<ReturnType<typeof cookies>>;
   isAdmin?: boolean;
 }) {
   return createServerClient(
@@ -15,7 +14,7 @@ export function createClient({
     isAdmin ? env.DATABASE_SERVICE_ROLE : env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
-        get(name: string) {
+        get: async (name: string) => {
           return cookieStore.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
@@ -25,7 +24,7 @@ export function createClient({
           cookieStore.set({ name, value: "", ...options });
         },
       },
-    },
+    }
   );
 }
 

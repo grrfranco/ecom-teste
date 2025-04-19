@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
-
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     remotePatterns: [
       {
@@ -13,11 +11,15 @@ const nextConfig = {
         protocol: "https",
         hostname: "source.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "hiyori-backpack.s3.us-west-2.amazonaws.com",
+      },
     ],
+      domains: ['cafepilao.vtexassets.com'],
+    
   },
-  experimental: {
-    serverComponentsExternalPackages: ["@aws-sdk/client-s3", "sharp"],
-  },
-}
+  serverExternalPackages: ["@aws-sdk/client-s3", "sharp"], // nova forma correta
+};
 
-export default nextConfig
+export default nextConfig;

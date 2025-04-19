@@ -10,8 +10,8 @@ type CartLinkProps = { productCount: number };
 function CartLink({ productCount }: CartLinkProps) {
   return (
     <Link href={"/cart"}>
-      <div className="relative w-4 h-4">
-        <Icons.cart className="w-4 h-4" aria-label="cart" />
+      <div className="relative w-6 h-6">
+        <Icons.cart className="w-6 h-6" aria-label="cart" />
         <Badge
           className={cn(
             "absolute block rounded-full w-4 h-4 p-0 -top-2 -right-2 text-[10px] text-center align-middle transition-all duration-200",

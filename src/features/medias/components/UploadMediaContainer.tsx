@@ -3,7 +3,7 @@ import { Icons } from "@/components/layouts/icons";
 import { Button } from "@/components/ui/button";
 import { gql } from "@/gql";
 import { FileWithPreview } from "@/types";
-import { useQuery } from "@urql/next";
+import { useQuery } from "urql";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FileWithPath, useDropzone } from "react-dropzone";

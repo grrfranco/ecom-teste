@@ -2,11 +2,11 @@
 
 import { relayPagination } from "@urql/exchange-graphcache/extras";
 import {
-  UrqlProvider,
+  Provider as UrqlProvider,
   createClient,
   fetchExchange,
   ssrExchange,
-} from "@urql/next";
+} from "urql";
 
 import { cacheExchange } from "@urql/exchange-graphcache";
 import { useMemo } from "react";
@@ -55,7 +55,7 @@ export default function Provider({ children }: React.PropsWithChildren) {
   }, [session]);
 
   return (
-    <UrqlProvider client={client} ssr={ssr}>
+    <UrqlProvider value={client}>
       {children}
     </UrqlProvider>
   );

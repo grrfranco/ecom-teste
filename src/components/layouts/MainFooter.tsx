@@ -133,7 +133,7 @@ function MainFooter({}: Props) {
             </div>
           </div>
 
-          <SocialMedias containerClassName="mr-12" />
+          {/* <SocialMedias containerClassName="mr-12" /> */}
         </div>
       </div>
     </footer>

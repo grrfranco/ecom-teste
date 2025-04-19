@@ -2,33 +2,33 @@ import { z } from "zod";
 
 export const authSchema = z.object({
   email: z.string().email({
-    message: "Please enter a valid email address",
+    message: "Por favor, coloque um email válido",
   }),
-  password: z
+  senha: z
     .string()
     .min(8, {
-      message: "Password must be at least 8 characters long",
+      message: "Senha deve ter pelo menos 8 caracteres",
     })
     .max(100)
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/, {
       message:
-        "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character",
+        "Senha deve conter pelo menos 8 caracteres, uma maiúscula, uma minúscula, um número e um caractere especial",
     }),
 });
 
 export const signupSchema = z.object({
   email: z.string().email({
-    message: "Please enter a valid email address",
+    message: "Por favor, coloque um email válido",
   }),
   name: z.string(),
-  password: z
+  senha: z
     .string()
     .min(8, {
-      message: "Password must be at least 8 characters long",
+      message: "Senha deve ter pelo menos 8 caracteres",
     })
     .max(100)
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/, {
       message:
-        "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character",
+        "Senha deve conter pelo menos 8 caracteres, uma maiúscula, uma minúscula, um número e um caractere especial",
     }),
 });

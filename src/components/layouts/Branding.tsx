@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
+
 
 type Props = { className?: string };
 
@@ -10,7 +12,14 @@ function Branding({ className }: Props) {
       href="/"
       className={cn("text-2xl font-medium align-middle", className)}
     >
-      HIYORI
+      <Image
+            src="/assets/logo.png"
+            alt=""
+            width={400}
+            height={400}
+            className="w-full max-w-full max-h-[64px] md:max-h-[none]"
+        />
+        
     </Link>
   );
 }

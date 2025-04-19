@@ -5,40 +5,27 @@ import { slugify } from "@/lib/utils";
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "HIYORI",
-  description: "Ecommerce Application built with NextJS 14",
+  name: "ATACAFÉ",
+  description: "A empresa com a razão social CAFE STORE COMERCIO E VAREJO LTDA., opera com o CNPJ 12.056.894/0001-10 e tem sua sede localizada na Rua Barao de Tatui, 387 - Vila Buarque, Sao Paulo - SP, 01.226-030. Seu foco principal de atuação é de Comércio atacadista de mercadorias em geral, com predominância de produtos alimentícios, de acordo com o código CNAE G-4691-5/00",
   url: "https://hiyori.hugo-coding.com",
-  address: "1600 Amphitheatre Parkway in Mountain View, California",
-  phone: "+1(234)-567-8901",
-  email: "hello@hugo-coding.com",
+  address: "Rua Barao de Tatui, 387 - Vila Buarque, Sao Paulo - SP, 01.226-030",
+  email: "contato@atacafe.com.br",
   mainNav: [
     {
-      title: "Shop",
-      href: "/shop",
-      description: "All the products we have to offer.",
-      items: [],
-    },
-    {
-      title: "Our Story",
+      title: "Sobre",
       href: "https://github.com/clonglam/HIYORI-master",
       description: "Our Story.",
       items: [],
     },
     {
-      title: "Brands & Designers",
-      href: "https://github.com/clonglam/HIYORI-master",
-      description: "Read our latest blog posts.",
+      title: "Produtos",
+      href: "/#produtos",
+      description: "Todos os produtos",
       items: [],
     },
     {
-      title: "Blog",
-      href: "https://blog.hugo-coding.com",
-      description: "Read our latest blog posts.",
-      items: [],
-    },
-    {
-      title: "Contact",
-      href: "https://hugo-coding.com/#contact",
+      title: "Contato",
+      href: "mailto:fulano@a.com?subject=Assunto do email&body=",
       description: "Read our latest blog posts.",
       items: [],
     },

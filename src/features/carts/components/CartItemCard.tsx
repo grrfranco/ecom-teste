@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 
 import { keytoUrl } from "@/lib/utils";
-import { UseQueryExecute } from "@urql/next";
+import { UseQueryExecute } from "urql";
 import Link from "next/link";
 import { Icons } from "../../../components/layouts/icons";
 import { Button } from "../../../components/ui/button";

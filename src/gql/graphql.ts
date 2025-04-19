@@ -2573,7 +2573,8 @@ export type ProductCardFragmentFragment = {
   slug: string;
   badge?: string | null;
   price: any;
-  featuredImage: {
+  images: string[]
+  featuredImage?: {
     __typename?: "medias";
     id: string;
     key: string;

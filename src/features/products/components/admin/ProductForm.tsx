@@ -30,7 +30,7 @@ import {
   products,
 } from "@/lib/supabase/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@urql/next";
+import { useQuery } from "urql";
 import { createInsertSchema } from "drizzle-zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

@@ -63,8 +63,8 @@ export function ProductCard({
       <CardContent className="relative p-0 mb-5 overflow-hidden">
         <Link href={`/shop/${slug}`}>
           <Image
-            src={keytoUrl(featuredImage.key)}
-            alt={featuredImage.alt}
+            src={product.images[0]}
+            alt={product.name}
             width={400}
             height={400}
             className="aspect-[1/1] object-cover object-center hover:scale-[1.02] hover:opacity-70 transition-all duration-500"
@@ -90,7 +90,7 @@ export function ProductCard({
           </CardDescription>
         </div>
 
-        <div className="">${price}</div>
+        <div className="">R${price}</div>
 
         <div className="hidden md:block">
           <Rating value={product.rating} precision={0.5} readOnly />

@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { DocumentType, gql } from "@/gql";
 import { expectedErrorsHandler } from "@/lib/urql";
 import { User } from "@supabase/supabase-js";
-import { useMutation, useQuery } from "@urql/next";
+import { useMutation, useQuery } from "urql";
 import { notFound } from "next/navigation";
 import {
   Card,

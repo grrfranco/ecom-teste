@@ -1,7 +1,7 @@
 "use client";
 import { useToast } from "@/components/ui/use-toast";
 import { User } from "@supabase/auth-helpers-nextjs";
-import { useMutation, useQuery } from "@urql/next";
+import { useMutation, useQuery } from "urql";
 import { FetchCartQuery } from "../components/UserCartSection";
 import { createCartMutation, updateCartsMutation } from "../query";
 import useCartStore from "../useCartStore";

@@ -1,6 +1,6 @@
 "use client";
 import { gql } from "@/gql";
-import { useQuery } from "@urql/next";
+import { useQuery } from "urql";
 import React from "react";
 import Header from "@/components/layouts/Header";
 import { ProductCard } from "@/features/products";

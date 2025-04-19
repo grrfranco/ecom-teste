@@ -1,6 +1,6 @@
 "use client";
 import { DocumentType, gql } from "@/gql";
-import { useQuery } from "@urql/next";
+import { useQuery } from "urql";
 import { useMemo } from "react";
 import {
   Card,
