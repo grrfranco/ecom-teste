@@ -15,7 +15,7 @@ import {
 import { AddToCartButton } from "@/features/carts";
 import { AddToWishListButton } from "@/features/wishlists";
 import { Rating } from "@/components/ui/rating";
-import { BadgeType } from "@/lib/supabase/schema";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/layouts/icons";
@@ -54,6 +54,12 @@ export function ProductCard({
   ...props
 }: ProductCardProps) {
   const { id, name, slug, featuredImage, badge, price } = product;
+  function formatPrice(price) {
+    return (price / 100).toFixed(2).replace('.', ',');
+  }
+
+  console.log(product)
+  
 
   return (
     <Card
@@ -70,11 +76,7 @@ export function ProductCard({
             className="aspect-[1/1] object-cover object-center hover:scale-[1.02] hover:opacity-70 transition-all duration-500"
           />
         </Link>
-        {badge && (
-          <Badge className="absolute top-0 left-0" variant={badge as BadgeType}>
-            {badge}
-          </Badge>
-        )}
+        
       </CardContent>
 
       <CardHeader className="p-0 mb-3 md:mb-5">
@@ -90,7 +92,7 @@ export function ProductCard({
           </CardDescription>
         </div>
 
-        <div className="">R${price}</div>
+        <div className="">R${formatPrice(price)}</div>
 
         <div className="hidden md:block">
           <Rating value={product.rating} precision={0.5} readOnly />
@@ -108,7 +110,7 @@ export function ProductCard({
           <AddToCartButton productId={id} />
         </Suspense>
 
-        <Suspense
+        {/* <Suspense
           fallback={
             <Button className="rounded-full p-3" variant="ghost" disabled>
               <Icons.heart className={"w-4 h-4 fill-none"} />
@@ -116,7 +118,7 @@ export function ProductCard({
           }
         >
           <AddToWishListButton productId={product.id} />
-        </Suspense>
+        </Suspense> */}
       </CardFooter>
     </Card>
   );

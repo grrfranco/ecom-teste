@@ -1,6 +1,6 @@
 {
-  "id": "00000000-0000-0000-0000-000000000000",
-  "prevId": "",
+  "id": "e7c71bfe-3b54-4a8a-b067-3e16afa588b6",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
@@ -63,7 +63,6 @@
           "name": "address_userProfileId_profiles_id_fk",
           "tableFrom": "address",
           "tableTo": "profiles",
-          "schemaTo": "public",
           "columnsFrom": [
             "userProfileId"
           ],
@@ -75,6 +74,49 @@
         }
       },
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "carts": {
+      "name": "carts",
+      "schema": "",
+      "columns": {
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "user_poduct_cart_id": {
+          "name": "user_poduct_cart_id",
+          "columns": [
+            "product_id",
+            "user_id"
+          ]
+        }
+      },
       "uniqueConstraints": {}
     },
     "collections": {
@@ -130,21 +172,6 @@
           "name": "collections_featured_image_id_medias_id_fk",
           "tableFrom": "collections",
           "tableTo": "medias",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "featured_image_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        },
-        "featured_image": {
-          "name": "featured_image",
-          "tableFrom": "collections",
-          "tableTo": "medias",
-          "schemaTo": "public",
           "columnsFrom": [
             "featured_image_id"
           ],
@@ -196,25 +223,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "comment_to_profile": {
-          "name": "comment_to_profile",
-          "tableFrom": "comments",
-          "tableTo": "profiles",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "profileId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        },
         "comments_profileId_profiles_id_fk": {
           "name": "comments_profileId_profiles_id_fk",
           "tableFrom": "comments",
           "tableTo": "profiles",
-          "schemaTo": "public",
           "columnsFrom": [
             "profileId"
           ],
@@ -267,6 +279,67 @@
       },
       "indexes": {},
       "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "order_lines": {
+      "name": "order_lines",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orderId": {
+          "name": "orderId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "numeric(8, 2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "order_lines_orderId_orders_id_fk": {
+          "name": "order_lines_orderId_orders_id_fk",
+          "tableFrom": "order_lines",
+          "tableTo": "orders",
+          "columnsFrom": [
+            "orderId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -350,25 +423,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "orders_profiles_fk": {
-          "name": "orders_profiles_fk",
-          "tableFrom": "orders",
-          "tableTo": "profiles",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "orders_user_id_profiles_id_fk": {
           "name": "orders_user_id_profiles_id_fk",
           "tableFrom": "orders",
           "tableTo": "profiles",
-          "schemaTo": "public",
           "columnsFrom": [
             "user_id"
           ],
@@ -413,25 +471,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "product_media_to_media": {
-          "name": "product_media_to_media",
-          "tableFrom": "product_medias",
-          "tableTo": "medias",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "mediaId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "cascade"
-        },
         "product_medias_mediaId_medias_id_fk": {
           "name": "product_medias_mediaId_medias_id_fk",
           "tableFrom": "product_medias",
           "tableTo": "medias",
-          "schemaTo": "public",
           "columnsFrom": [
             "mediaId"
           ],
@@ -510,10 +553,9 @@
         },
         "price": {
           "name": "price",
-          "type": "numeric(8, 2)",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": "0.00"
+          "notNull": true
         },
         "totalComments": {
           "name": "totalComments",
@@ -553,19 +595,12 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "products_id_key": {
-          "columns": [
-            "id"
-          ],
-          "nullsNotDistinct": false,
-          "name": "products_id_key"
-        },
         "products_slug_unique": {
+          "name": "products_slug_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "slug"
-          ],
-          "nullsNotDistinct": false,
-          "name": "products_slug_unique"
+          ]
         }
       }
     },
@@ -610,89 +645,13 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "profiles_email_unique": {
+          "name": "profiles_email_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "email"
-          ],
-          "nullsNotDistinct": false,
-          "name": "profiles_email_unique"
+          ]
         }
       }
-    },
-    "order_lines": {
-      "name": "order_lines",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "orderId": {
-          "name": "orderId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "quantity": {
-          "name": "quantity",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "price": {
-          "name": "price",
-          "type": "numeric(8, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "order_lines_orderId_orders_id_fk": {
-          "name": "order_lines_orderId_orders_id_fk",
-          "tableFrom": "order_lines",
-          "tableTo": "orders",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "orderId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        },
-        "order_lines_to_shop_orders": {
-          "name": "order_lines_to_shop_orders",
-          "tableFrom": "order_lines",
-          "tableTo": "orders",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "orderId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "cascade"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
     },
     "wishlist": {
       "name": "wishlist",
@@ -730,67 +689,9 @@
         }
       },
       "uniqueConstraints": {}
-    },
-    "carts": {
-      "name": "carts",
-      "schema": "",
-      "columns": {
-        "quantity": {
-          "name": "quantity",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "user_poduct_cart_id": {
-          "name": "user_poduct_cart_id",
-          "columns": [
-            "product_id",
-            "user_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {}
     }
   },
   "enums": {
-    "factor_type": {
-      "name": "factor_type",
-      "values": {
-        "phone": "phone",
-        "webauthn": "webauthn",
-        "totp": "totp"
-      }
-    },
-    "factor_status": {
-      "name": "factor_status",
-      "values": {
-        "verified": "verified",
-        "unverified": "unverified"
-      }
-    },
     "aal_level": {
       "name": "aal_level",
       "values": {
@@ -799,22 +700,21 @@
         "aal1": "aal1"
       }
     },
+    "action": {
+      "name": "action",
+      "values": {
+        "ERROR": "ERROR",
+        "TRUNCATE": "TRUNCATE",
+        "DELETE": "DELETE",
+        "UPDATE": "UPDATE",
+        "INSERT": "INSERT"
+      }
+    },
     "code_challenge_method": {
       "name": "code_challenge_method",
       "values": {
         "plain": "plain",
         "s256": "s256"
-      }
-    },
-    "one_time_token_type": {
-      "name": "one_time_token_type",
-      "values": {
-        "phone_change_token": "phone_change_token",
-        "email_change_token_current": "email_change_token_current",
-        "email_change_token_new": "email_change_token_new",
-        "recovery_token": "recovery_token",
-        "reauthentication_token": "reauthentication_token",
-        "confirmation_token": "confirmation_token"
       }
     },
     "equality_op": {
@@ -829,21 +729,37 @@
         "eq": "eq"
       }
     },
-    "action": {
-      "name": "action",
+    "factor_status": {
+      "name": "factor_status",
       "values": {
-        "ERROR": "ERROR",
-        "TRUNCATE": "TRUNCATE",
-        "DELETE": "DELETE",
-        "UPDATE": "UPDATE",
-        "INSERT": "INSERT"
+        "verified": "verified",
+        "unverified": "unverified"
+      }
+    },
+    "factor_type": {
+      "name": "factor_type",
+      "values": {
+        "phone": "phone",
+        "webauthn": "webauthn",
+        "totp": "totp"
+      }
+    },
+    "one_time_token_type": {
+      "name": "one_time_token_type",
+      "values": {
+        "phone_change_token": "phone_change_token",
+        "email_change_token_current": "email_change_token_current",
+        "email_change_token_new": "email_change_token_new",
+        "recovery_token": "recovery_token",
+        "reauthentication_token": "reauthentication_token",
+        "confirmation_token": "confirmation_token"
       }
     }
   },
   "schemas": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {}
   }
 }

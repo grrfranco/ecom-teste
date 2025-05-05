@@ -16,7 +16,7 @@ export default async function Home() {
       {/* Hero */}
       <section className="w-full h-[70vh] bg-zinc-900 relative text-white flex items-center justify-center">
         <Image
-          src="/assets/hero-coffee.jpg"
+          src="/assets/cutingcardImage.jpg"
           alt="Café especial"
           fill
           className="object-cover opacity-30"

@@ -1,7 +1,12 @@
 "use client";
-import { DocumentType, gql } from "@/gql";
-import { useQuery } from "urql";
-import { useMemo } from "react";
+
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import useCartStore, {
+  CartItems,
+  calcProductCountStorage,
+} from "../useCartStore";
+
 import {
   Card,
   CardContent,
@@ -14,105 +19,149 @@ import { Skeleton } from "@/components/ui/skeleton";
 import EmptyCart from "./EmptyCart";
 import CartItemCard from "./CartItemCard";
 import CheckoutButton from "./CheckoutButton";
-import useCartStore, {
-  CartItems,
-  calcProductCountStorage,
-} from "../useCartStore";
 import { useToast } from "@/components/ui/use-toast";
 
+// Tipo do produto esperado
+type Product = {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  description: string;
+  images: string[];
+};
+
+// Componente principal da seção de carrinho para visitantes
 function GuestCartSection() {
   const { toast } = useToast();
+
+  // Estado global do carrinho (Zustand)
   const cartItems = useCartStore((s) => s.cart);
   const addProductToCart = useCartStore((s) => s.addProductToCart);
   const removeProduct = useCartStore((s) => s.removeProduct);
 
-  const [{ data, fetching, error }, _] = useQuery({
-    query: FetchGuestCartQuery,
-    variables: {
-      cartItems: Object.keys(cartItems).map((key) => key),
-      first: 8,
-    },
-  });
+  // 🧠 Extrai IDs dos produtos no carrinho, com memoização para evitar re-render infinito
+  const cartProductIds = useMemo(() => Object.keys(cartItems), [cartItems]);
 
-  const subtotal = useMemo(
-    () => calcSubtotal({ prdouctsDetails: data, quantity: cartItems }),
-    [data, cartItems],
-  );
+  // Estados locais
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
 
+  // 🔁 Busca os produtos no Supabase
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (cartProductIds.length === 0) return;
+
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .in("id", cartProductIds);
+
+      if (error) {
+        console.error("Erro ao buscar produtos:", error);
+        toast({ title: "Erro ao carregar carrinho." });
+      } else if (
+        data &&
+        JSON.stringify(data) !== JSON.stringify(products)
+      ) {
+        setProducts(data as Product[]);
+      }
+
+      setLoading(false);
+    };
+
+    fetchProducts();
+  }, [cartProductIds]); // Agora é estável, graças ao useMemo
+
+  // 🧮 Subtotal calculado com base nos produtos e quantidades
+  const subtotal = useMemo(() => {
+    return products.reduce((acc, cur) => {
+      const quantity = cartItems[cur.id]?.quantity ?? 0;
+      return acc + quantity * cur.price;
+    }, 0);
+  }, [products, cartItems]);
+
+  // Contagem total de itens no carrinho
   const productCount = useMemo(
     () => calcProductCountStorage(cartItems),
-    [cartItems],
+    [cartItems]
   );
-  if (fetching) return LoadingCartSection();
-  if (error) return <div>Error</div>;
 
+  // 📦 Ações para alterar o carrinho
   const addOneHandler = (productId: string, quantity: number) => {
     if (quantity < 8) {
       addProductToCart(productId, 1);
     } else {
-      toast({ title: "Proudct Limit is reached." });
+      toast({ title: "Limite de produto atingido." });
     }
   };
+
   const minusOneHandler = (productId: string, quantity: number) => {
     if (quantity > 1) {
       addProductToCart(productId, -1);
     } else {
-      toast({ title: "Minimum is reached." });
+      toast({ title: "Mínimo atingido." });
     }
   };
+
   const removeHandler = (productId: string) => {
     removeProduct(productId);
-    toast({ title: "Product Removed." });
+    toast({ title: "Produto removido." });
   };
 
+  // ⏳ Tela de carregamento
+  if (loading) return <LoadingCartSection />;
+
+  // 🙁 Carrinho vazio
+  if (!products.length) return <EmptyCart />;
+
   return (
-    <>
-      {Object.keys(cartItems).length > 0 ? (
-        <section
-          aria-label="Cart Section"
-          className="grid grid-cols-12 gap-x-6 gap-y-5"
-        >
-          <div className="col-span-12 md:col-span-9 max-h-[420px] md:max-h-[640px] overflow-y-auto">
-            {data.productsCollection.edges.map(({ node }) => (
-              <CartItemCard
-                key={node.id}
-                id={node.id}
-                product={node}
-                quantity={cartItems[node.id].quantity}
-                addOneHandler={() =>
-                  addOneHandler(node.id, cartItems[node.id].quantity)
-                }
-                minusOneHandler={() =>
-                  minusOneHandler(node.id, cartItems[node.id].quantity)
-                }
-                removeHandler={() => removeHandler(node.id)}
-              />
-            ))}
-          </div>
+    <section
+      aria-label="Cart Section"
+      className="grid grid-cols-12 gap-x-6 gap-y-5"
+    >
+      {/* Lista de produtos */}
+      <div className="col-span-12 md:col-span-9 max-h-[420px] md:max-h-[640px] overflow-y-auto">
+        {products.map((product) => (
+          <CartItemCard
+            key={product.id}
+            id={product.id}
+            product={product}
+            quantity={cartItems[product.id]?.quantity ?? 1}
+            addOneHandler={() =>
+              addOneHandler(product.id, cartItems[product.id]?.quantity ?? 1)
+            }
+            minusOneHandler={() =>
+              minusOneHandler(product.id, cartItems[product.id]?.quantity ?? 1)
+            }
+            removeHandler={() => removeHandler(product.id)}
+          />
+        ))}
+      </div>
 
-          <Card className="w-full h-[180px] px-3 col-span-12 md:col-span-3">
-            <CardHeader className="px-3 pt-2 pb-0 text-md">
-              <CardTitle className="text-lg mb-0">Subtotoal: </CardTitle>
-              <CardDescription>{`${productCount} Items`}</CardDescription>
-            </CardHeader>
-            <CardContent className="relative overflow-hidden px-3 py-2">
-              <p className="text-3xl md:text-lg lg:text-2xl font-bold">{`$ ${subtotal.toFixed(2).toString()}`}</p>
-            </CardContent>
-
-            <CardFooter className="gap-x-2 md:gap-x-5 px-3">
-              <CheckoutButton guest={true} order={cartItems} />
-            </CardFooter>
-          </Card>
-        </section>
-      ) : (
-        <EmptyCart />
-      )}
-    </>
+      {/* Resumo do carrinho */}
+      <Card className="w-full h-[180px] px-3 col-span-12 md:col-span-3">
+        <CardHeader className="px-3 pt-2 pb-0 text-md">
+          <CardTitle className="text-lg mb-0">Subtotal</CardTitle>
+          <CardDescription>{`${productCount} itens`}</CardDescription>
+        </CardHeader>
+        <CardContent className="relative overflow-hidden px-3 py-2">
+          <p className="text-3xl md:text-lg lg:text-2xl font-bold">
+            R$ {(subtotal / 100).toFixed(2)}
+          </p>
+        </CardContent>
+        <CardFooter className="gap-x-2 md:gap-x-5 px-3">
+          <CheckoutButton guest={true} order={cartItems} />
+        </CardFooter>
+      </Card>
+    </section>
   );
 }
 
 export default GuestCartSection;
 
+// Skeleton usado enquanto os dados são carregados
 export const LoadingCartSection = () => (
   <section
     className="grid grid-cols-12 gap-x-6 gap-y-5"
@@ -144,44 +193,3 @@ export const LoadingCartSection = () => (
     </div>
   </section>
 );
-
-const calcSubtotal = ({
-  prdouctsDetails,
-  quantity,
-}: {
-  prdouctsDetails: DocumentType<typeof FetchGuestCartQuery>;
-  quantity: CartItems;
-}) => {
-  const productPrices =
-    prdouctsDetails && prdouctsDetails.productsCollection.edges
-      ? prdouctsDetails.productsCollection.edges
-      : [];
-
-  if (!productPrices.length) return 0;
-
-  return productPrices.reduce(
-    (acc, cur) => acc + quantity[cur.node.id].quantity * cur.node.price,
-    0,
-  );
-};
-
-const FetchGuestCartQuery = gql(/* GraphQL */ `
-  query FetchGuestCartQuery(
-    $cartItems: [String!]
-    $first: Int
-    $after: Cursor
-  ) {
-    productsCollection(
-      first: $first
-      after: $after
-      filter: { id: { in: $cartItems } }
-    ) {
-      edges {
-        node {
-          id
-          ...CartItemCardFragment
-        }
-      }
-    }
-  }
-`);
