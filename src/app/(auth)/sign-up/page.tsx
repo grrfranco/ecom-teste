@@ -21,11 +21,11 @@ export const metadata: Metadata = {
 export default function SignUpPage() {
   return (
     <section>
-      <Card className="border-0 shadow-none">
+      <Card className="border-0 shadow-none bg-white">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl">Sign up</CardTitle>
+          <CardTitle className="text-2xl">Cadastre-se</CardTitle>
           <CardDescription>
-            Choose your preferred sign up method
+            Escolha seu método preferido de cadastro.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
@@ -43,7 +43,7 @@ export default function SignUpPage() {
                 <span className="w-full border-t" />
               </div>
               <span className="bg-background px-2 text-muted-foreground z-10">
-                Or continue with
+                Ou continue
               </span>
             </div>
 
@@ -54,13 +54,13 @@ export default function SignUpPage() {
         </CardContent>
         <CardFooter className="grid gap-4">
           <div className="text-sm text-muted-foreground">
-            Already have an account?{" "}
+            Já tem uma conta?{" "}
             <Link
               aria-label="Sign in"
               href="/signin"
               className="text-primary underline-offset-4 transition-colors hover:underline"
             >
-              Sign in
+              Entre
             </Link>
           </div>
         </CardFooter>

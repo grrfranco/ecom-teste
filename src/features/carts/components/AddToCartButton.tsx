@@ -20,10 +20,11 @@ function AddToCartButton({ productId, quantity = 1 }: AddToCartButtonProps) {
   return (
     <Suspense>
       <Button
-        className="rounded-full p-0 h-8 w-8"
+        className="w-full"
         onClick={() => addProductToCart(quantity)}
       >
-        <Icons.basket className="h-5 w-5 md:h-4 md:w-4" />
+        {/* <Icons.basket className="h-5 w-5 md:h-4 md:w-4" /> */}
+        Adicionar ao carrinho
       </Button>
     </Suspense>
   );

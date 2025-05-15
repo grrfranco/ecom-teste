@@ -13,8 +13,8 @@ async function CartPage() {
   return (
     <Shell>
       <section className="flex justify-between items-center py-8">
-        <h1 className="text-3xl">Your Cart</h1>
-        <Link href="/shop">Continue shopping</Link>
+        <h1 className="text-3xl">Seu carrinho</h1>
+        <Link href="/shop">Continuar comprando</Link>
       </section>
 
       <Suspense fallback={<CartSectionSkeleton />}>

@@ -42,7 +42,7 @@ function CheckoutButton({ order, guest, ...props }: CheckoutButtonProps) {
       onClick={onClickHandler}
       disabled={isLoading}
     >
-      {isLoading ? "Loading ...  " : "Check out"}
+      {isLoading ? "Carregando  " : "Finalizar compra"}
       {isLoading && (
         <Spinner className="ml-3 h-4 w-4 animate-spin" aria-hidden="true" />
       )}

@@ -101,8 +101,8 @@ export function SignInForm() {
           {isPending && (
             <Spinner className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
           )}
-          Sign in
-          <span className="sr-only">Sign in</span>
+          Entre
+          <span className="sr-only">Entre</span>
         </Button>
       </form>
     </Form>

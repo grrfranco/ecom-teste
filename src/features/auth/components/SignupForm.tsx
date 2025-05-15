@@ -37,16 +37,16 @@ export function SignUpForm() {
     defaultValues: {
       name: searchParams.get("name") || "",
       email: searchParams.get("email") || "",
-      password: searchParams.get("password") || "",
+      senha: searchParams.get("password") || "",
     },
   });
 
-  async function onSubmit({ email, password, name }: FormData) {
+  async function onSubmit({ email, senha, name }: FormData) {
     setIsLoading(true);
 
     const { data, error } = await supabase.auth.signUp({
       email,
-      password,
+      password:senha,
       options: {
         data: {
           name,
@@ -81,9 +81,9 @@ export function SignUpForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input placeholder="How should we call you?" {...field} />
+                <Input placeholder="Como devemos te chamar?" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -105,10 +105,10 @@ export function SignUpForm() {
         />
         <FormField
           control={form.control}
-          name="password"
+          name="senha"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Senha</FormLabel>
               <FormControl>
                 <PasswordInput placeholder="**********" {...field} />
               </FormControl>

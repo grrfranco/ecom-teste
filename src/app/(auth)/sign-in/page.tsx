@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function SignInPage() {
   return (
     <section>
-      <Card className="border-0 shadow-none">
+      <Card className="border-0 shadow-none bg-white">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Entre</CardTitle>
           <CardDescription>Bem vindo de volta.</CardDescription>
