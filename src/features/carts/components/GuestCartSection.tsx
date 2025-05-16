@@ -152,7 +152,7 @@ function GuestCartSection() {
           </p>
         </CardContent>
         <CardFooter className="gap-x-2 md:gap-x-5 px-3">
-          <CheckoutButton guest={true} order={cartItems} />
+          <CheckoutButton guest={true} order={cartItems} totalValue={subtotal}/>
         </CardFooter>
       </Card>
     </section>

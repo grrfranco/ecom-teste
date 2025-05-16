@@ -1,117 +1,84 @@
-import { getProductsByIds } from "@/_actions/products";
-import type { CartItems } from "@/features/carts";
-import { stripe } from "@/lib/stripe";
-import db from "@/lib/supabase/db";
-import { SelectProducts, orders } from "@/lib/supabase/schema";
-import { getURL } from "@/lib/utils";
-import { orderLines } from "./../../../lib/supabase/schema";
-
-import { User, createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { z } from "zod";
+import fetch from "node-fetch";
+import supabase from "@/lib/supabase/client";
 
-const orderProductsSchema = z.object({
-  orderProducts: z.record(
-    z.object({
-      quantity: z.number().min(1), // Assuming quantity should be at least 1
-    }),
-  ),
-  guest: z.boolean(),
-});
-
-type OrderProducts = CartItems;
+// Token da PrimePag - Substitua aqui pelo seu token
+const PRIMEPAG_TOKEN = "Bearer SEU_TOKEN_DE_AUTENTICACAO";
 
 export async function POST(request: Request) {
-  const data = (await request.json()) as {
-    orderProducts: OrderProducts;
-    guest: boolean;
-  };
+    const { paymentMethod, userId, orderProducts } = await request.json();
 
-  let user: User | undefined;
+    if (!userId) {
+        return NextResponse.json({ success: false, message: "Usuário não autenticado." });
+    }
 
-  const validation = orderProductsSchema.safeParse(data);
-  const supabase = createRouteHandlerClient({ cookies });
+    // Obtendo os dados do usuário (Nome e CPF)
+    const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("name, cpf")
+        .eq("id", userId)
+        .single();
 
-  if (!validation)
-    return new NextResponse(JSON.stringify("Invalid data format."), {
-      status: 400,
-    });
+    if (userError || !userData) {
+        return NextResponse.json({ success: false, message: "Erro ao obter dados do usuário." });
+    }
 
-  try {
-    const productsQuantity = await mergeProductDetailsWithQuantities(
-      data.orderProducts,
-    );
+    // Calculando o valor total com base nos itens do carrinho enviados
+    const totalValue = orderProducts.reduce((total, product) => {
+        return total + (product.price * product.quantity);
+    }, 0);
 
-    const amount = calcSubtotal(productsQuantity);
+    if (paymentMethod === "pix") {
+        try {
+            const response = await fetch("https://api.primepag.com.br/v1/pix/checkout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": PRIMEPAG_TOKEN
+                },
+                body: JSON.stringify({
+                    value_cents: totalValue,
+                    generator_name: userData.name,
+                    generator_document: userData.cpf,
+                    expiration_time: "1800",
+                    external_link: `https://seusite.com/account/orders` // Redireciona para "Meus Pedidos"
+                })
+            });
 
-    const insertedOrder = await db
-      .insert(orders)
-      .values({
-        user_id: !data.guest
-          ? (await supabase.auth.getUser()).data.user.id
-          : null,
-        currency: "cad",
-        amount: `${amount}`,
-        order_status: "pending",
-        payment_status: "unpaid",
-        payment_method: "card",
-      })
-      .returning();
+            const data = await response.json();
+            if (response.ok && data.link) {
+                // Salvando o pedido na tabela "orders" com status "Pendente"
+                const { data: orderData, error } = await supabase.from("orders").insert({
+                    user_id: userId,
+                    total_value: totalValue,
+                    status: "Pendente",
+                    products: orderProducts
+                }).select("id").single();
 
-    await db.insert(orderLines).values(
-      productsQuantity.map(({ id, quantity, price }) => ({
-        productId: id,
-        quantity,
-        price: `${price}`,
-        orderId: insertedOrder[0].id,
-      })),
-    );
+                if (error) throw new Error("Erro ao salvar o pedido.");
 
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      billing_address_collection: "required",
-      client_reference_id: insertedOrder[0].id,
-      line_items: productsQuantity.map(({ name, price, quantity }) => ({
-        price_data: {
-          currency: "cad",
-          product_data: {
-            name: name,
-          },
-          unit_amount: parseFloat(price) * 100,
-        },
-        quantity: quantity,
-      })),
-      mode: "payment",
-      allow_promotion_codes: true,
-      success_url: `${getURL()}/orders/${insertedOrder[0].id}`,
-      cancel_url: `${getURL()}/cart`,
-    });
+                // Simulando atualização para "Pago" (em produção isso seria via webhook)
+                setTimeout(async () => {
+                    await supabase.from("orders").update({ status: "Pago" }).eq("id", orderData.id);
+                }, 5000);
 
-    return NextResponse.json({ sessionId: session.id });
-  } catch (err) {
-    return new NextResponse("Internal Error", { status: 500 });
-  }
+                return NextResponse.json({
+                    success: true,
+                    qrCodeLink: data.link
+                });
+            } else {
+                return NextResponse.json({
+                    success: false,
+                    message: "Falha ao gerar o QR Code PIX."
+                });
+            }
+        } catch (error) {
+            return NextResponse.json({
+                success: false,
+                message: "Erro na integração com PrimePag: " + error.message
+            });
+        }
+    }
+
+    return NextResponse.json({ success: false, message: "Método de pagamento não suportado." });
 }
-
-const calcSubtotal = (
-  productsQuantity: (SelectProducts & { quantity: number })[],
-) =>
-  productsQuantity.reduce((acc, cur) => {
-    return acc + cur.quantity * parseFloat(cur.price);
-  }, 0);
-
-const mergeProductDetailsWithQuantities = async (
-  orderProducts: OrderProducts,
-): Promise<(SelectProducts & { quantity: number })[]> => {
-  const productIds = Object.keys(orderProducts);
-  const products = await getProductsByIds(productIds);
-
-  const orderDetails = products.map((product) => {
-    const quantity = orderProducts[product.id].quantity;
-    return { ...product, quantity };
-  });
-
-  return orderDetails;
-};

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// Schema de Login (Auth)
 export const authSchema = z.object({
   email: z.string().email({
     message: "Por favor, coloque um email válido",
@@ -16,11 +17,17 @@ export const authSchema = z.object({
     }),
 });
 
+// Schema de Cadastro (SignUp)
 export const signupSchema = z.object({
   email: z.string().email({
     message: "Por favor, coloque um email válido",
   }),
-  name: z.string(),
+  name: z.string().nonempty("O nome é obrigatório."),
+  cpf: z.string()
+    .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, {
+      message: "Digite um CPF válido (000.000.000-00)",
+    })
+    .nonempty("O CPF é obrigatório."),
   senha: z
     .string()
     .min(8, {
