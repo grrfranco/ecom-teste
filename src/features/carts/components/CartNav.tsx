@@ -32,10 +32,10 @@ const UserCartNav = ({ currentUser }: { currentUser: User }) => {
 
   const carts = data?.cartsCollection;
 
-  const productCount = useMemo(
-    () => (carts?.edges || []).reduce((acc, cur) => acc + cur.node.quantity, 0),
-    [carts.edges],
-  );
+ const productCount = useMemo(
+  () => (carts?.edges ?? []).reduce((a, c) => a + c.node.quantity, 0),
+  [carts],                   // basta observar carts inteiro
+); 
 
   return (
     <div>
